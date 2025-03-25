@@ -35,13 +35,9 @@ object SpringFrameworkVcs : GitVcsRoot({
     branchSpec = "+:*"
 })
 
-object MainCIBuild : BuildType({
-    name = "Main CI Build"
-    description = "Main CI build running on multiple Java versions"
-    
-    vcs {
-        root(SpringFrameworkVcs)
-    }
+object GradleBuildTemplate : Template({
+    name = "Gradle Build Template"
+    description = "Template for Gradle builds"
 
     params {
         param("env.JAVA_HOME", "%env.JDK_17%")
@@ -72,11 +68,6 @@ object MainCIBuild : BuildType({
         }
     }
 
-    requirements {
-        contains("teamcity.agent.jvm.os.name", "Linux")
-        contains("teamcity.agent.jvm.version", "17")
-    }
-
     artifactRules = """
         +:build/reports/** => build-reports
         +:build/test-results/** => test-results
@@ -84,7 +75,64 @@ object MainCIBuild : BuildType({
     """.trimIndent()
 })
 
+object Java17Build : BuildType({
+    name = "Java 17 Build"
+    description = "Build with Java 17"
+    
+    vcs {
+        root(SpringFrameworkVcs)
+    }
+
+    requirements {
+        contains("teamcity.agent.jvm.os.name", "Linux")
+        contains("teamcity.agent.jvm.version", "17")
+    }
+
+    params {
+        param("env.JAVA_HOME", "%env.JDK_17%")
+    }
+})
+
+object Java21Build : BuildType({
+    name = "Java 21 Build"
+    description = "Build with Java 21"
+    
+    vcs {
+        root(SpringFrameworkVcs)
+    }
+
+    requirements {
+        contains("teamcity.agent.jvm.os.name", "Linux")
+        contains("teamcity.agent.jvm.version", "21")
+    }
+
+    params {
+        param("env.JAVA_HOME", "%env.JDK_21%")
+    }
+})
+
+object Java23Build : BuildType({
+    name = "Java 23 Build"
+    description = "Build with Java 23 (Early Access)"
+    
+    vcs {
+        root(SpringFrameworkVcs)
+    }
+
+    requirements {
+        contains("teamcity.agent.jvm.os.name", "Linux")
+        contains("teamcity.agent.jvm.version", "23")
+    }
+
+    params {
+        param("env.JAVA_HOME", "%env.JDK_23%")
+    }
+})
+
 project {
     vcsRoot(SpringFrameworkVcs)
-    buildType(MainCIBuild)
+    template(GradleBuildTemplate)
+    buildType(Java17Build)
+    buildType(Java21Build)
+    buildType(Java23Build)
 }
