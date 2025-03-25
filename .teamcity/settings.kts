@@ -30,7 +30,7 @@ version = "2024.12"
 
 object SpringFrameworkVcs : GitVcsRoot({
     name = "Spring Framework"
-    url = "https://github.com/spring-projects/spring-framework.git"
+    url = "https://github.com/das747/spring-framework.git"
     branch = "refs/heads/main"
     branchSpec = "+:*"
 })
