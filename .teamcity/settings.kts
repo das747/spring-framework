@@ -40,7 +40,6 @@ object GradleBuildTemplate : Template({
     description = "Template for Gradle builds"
 
     params {
-        param("env.JAVA_HOME", "%env.JDK_17%")
         param("kotlinVersion", "2.1.20")
         param("version", "7.0.0-SNAPSHOT")
     }
@@ -75,9 +74,11 @@ object GradleBuildTemplate : Template({
     """.trimIndent()
 })
 
-object Java17Build : BuildType({
-    name = "Java 17 Build"
-    description = "Build with Java 17"
+object MainBuild : BuildType({
+    name = "Main Build"
+    description = "Main build with Java 17"
+    
+    templates(GradleBuildTemplate)
     
     vcs {
         root(SpringFrameworkVcs)
@@ -93,46 +94,37 @@ object Java17Build : BuildType({
     }
 })
 
-object Java21Build : BuildType({
-    name = "Java 21 Build"
-    description = "Build with Java 21"
+object MatrixBuild : BuildType({
+    name = "Matrix Build"
+    description = "Matrix build for different Java versions"
+    
+    templates(GradleBuildTemplate)
     
     vcs {
         root(SpringFrameworkVcs)
     }
 
-    requirements {
-        contains("teamcity.agent.jvm.os.name", "Linux")
-        contains("teamcity.agent.jvm.version", "21")
-    }
-
-    params {
-        param("env.JAVA_HOME", "%env.JDK_21%")
-    }
-})
-
-object Java23Build : BuildType({
-    name = "Java 23 Build"
-    description = "Build with Java 23 (Early Access)"
-    
-    vcs {
-        root(SpringFrameworkVcs)
+    matrix {
+        axis("java") {
+            value("17")
+            value("21")
+            value("23")
+        }
     }
 
     requirements {
         contains("teamcity.agent.jvm.os.name", "Linux")
-        contains("teamcity.agent.jvm.version", "23")
+        contains("teamcity.agent.jvm.version", "%matrix.java%")
     }
 
     params {
-        param("env.JAVA_HOME", "%env.JDK_23%")
+        param("env.JAVA_HOME", "%env.JDK_%matrix.java%%")
     }
 })
 
 project {
     vcsRoot(SpringFrameworkVcs)
     template(GradleBuildTemplate)
-    buildType(Java17Build)
-    buildType(Java21Build)
-    buildType(Java23Build)
+    buildType(MainBuild)
+    buildType(MatrixBuild)
 }
