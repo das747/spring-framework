@@ -4,6 +4,7 @@ import jetbrains.buildServer.configs.kotlin.triggers.schedule
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot
 import jetbrains.buildServer.configs.kotlin.buildFeatures.matrix
+import jetbrains.buildServer.configs.kotlin.buildFeatures.matrix.Axis
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -107,11 +108,11 @@ object MatrixBuild : BuildType({
 
     features {
         matrix {
-            axis("java") {
-                value("17")
-                value("21")
-                value("23")
-            }
+            param("java", listOf(
+                value("17", label = "JDK 17"),
+                value("21", label = "JDK 21"),
+                value("23", label = "JDK 23")
+            ))
         }
     }
 
