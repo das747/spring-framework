@@ -3,6 +3,7 @@ import jetbrains.buildServer.configs.kotlin.buildSteps.gradle
 import jetbrains.buildServer.configs.kotlin.triggers.schedule
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot
+import jetbrains.buildServer.configs.kotlin.buildFeatures.matrix
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -104,11 +105,13 @@ object MatrixBuild : BuildType({
         root(SpringFrameworkVcs)
     }
 
-    matrix {
-        axis("java") {
-            value("17")
-            value("21")
-            value("23")
+    features {
+        matrix {
+            axis("java") {
+                value("17")
+                value("21")
+                value("23")
+            }
         }
     }
 
