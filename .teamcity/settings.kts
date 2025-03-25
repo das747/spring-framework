@@ -33,7 +33,6 @@ object SpringFrameworkVcs : GitVcsRoot({
     url = "https://github.com/spring-projects/spring-framework.git"
     branch = "refs/heads/main"
     branchSpec = "+:*"
-    checkoutMode = CheckoutMode.AUTO
 })
 
 object MainCIBuild : BuildType({
